@@ -71,8 +71,8 @@ Run: select * from messages;
 
 or 
 
-
 i) MySQL container 
+
 ```bash
 docker run -d \
     --name mysql \
@@ -80,14 +80,12 @@ docker run -d \
     -e MYSQL_DATABASE=mydb \
     -e MYSQL_ROOT_PASSWORD=admin \
     -p 3306:3306 \
-    mysql:5.7
+    mysql
 
     or 
 
-    
-
-```
 ii) Backend container
+
 ```bash
 docker run -d \
     --name flaskapp \
@@ -97,10 +95,7 @@ docker run -d \
     -e MYSQL_PASSWORD=admin \
     -e MYSQL_DB=mydb \
     -p 5000:5000 \
-    flaskapp:latest
-
-```
-
+    two:latest
 
 #### To run this two-tier application using  with docker-compose
 
@@ -120,6 +115,11 @@ docker run -d \
    ```
 
 ## Usage
+
+0. Create docker-compose.file
+
+
+
 
 1. Start the containers using Docker Compose:
 
@@ -159,12 +159,12 @@ docker-compose down
 ## Notes
 
 - Make sure to replace placeholders (e.g., `your_username`, `your_password`, `your_database`) with your actual MySQL configuration.
-
 - This is a basic setup for demonstration purposes. In a production environment, you should follow best practices for security and performance.
-
 - Be cautious when executing SQL queries directly. Validate and sanitize user inputs to prevent vulnerabilities like SQL injection.
-
 - If you encounter issues, check Docker logs and error messages for troubleshooting.
+
+
+
 
  
 
