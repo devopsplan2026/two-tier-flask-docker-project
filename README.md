@@ -14,23 +14,103 @@ Before you begin, make sure you have the following installed:
 
 1. Clone this repository (if you haven't already):
 
-   ```bash
-   git clone https://github.com/your-username/your-repo-name.git
-   ```
+  git clone https://github.com/devopsplan2026/two-tier-flask-docker-project.git
+
 
 2. Navigate to the project directory:
 
-   ```bash
    cd your-repo-name
-   ```
 
-3. Create a `.env` file in the project directory to store your MySQL environment variables:
+   - First create a docker image from Dockerfile
+
+#### To run this two-tier application using  without docker-compose
+
+3. Create a Image form dockerfile 
+
+docker build -t two .
+
+4. Check and Create a Network 
+
+Run to check docker network list:
+
+docker network ls
+
+docker network create mynet -d bridge    ## -d means driver, these networks we called also driver
+
+5. Run the container mysql
+
+docker run -d --name my_sql --network two -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=devops mysql
+
+6. Run the container Flask
+
+docker run -d -p 5000:5000 --network two -e MYSQL_HOST=my_sql -e MYSQL_USER=root -e MYSQL_PASSWORD=root -e MYSQL_DB=devops two:latest
+
+###### To check the logs of container
+
+docker logs <container-ID>
+
+###### To check the logs of docker network 
+
+docker network inspect two
+
+7. Database testing: ( Go inside the container and access the database )
+
+Run: docker exec -it my_sql /bin/bash 
+
+Run: mysql -u root -p 
+
+Run: SHOW DATABASES;
+
+Or 
+
+CREATE DATABASE devops;
+
+Run: USE devops;
+Run: SHOW TABLES;
+Run: select * from messages;
+
+or 
+
+
+i) MySQL container 
+```bash
+docker run -d \
+    --name mysql \
+    --network=two \
+    -e MYSQL_DATABASE=mydb \
+    -e MYSQL_ROOT_PASSWORD=admin \
+    -p 3306:3306 \
+    mysql:5.7
+
+    or 
+
+    
+
+```
+ii) Backend container
+```bash
+docker run -d \
+    --name flaskapp \
+    --network=twotier \
+    -e MYSQL_HOST=mysql \
+    -e MYSQL_USER=root \
+    -e MYSQL_PASSWORD=admin \
+    -e MYSQL_DB=mydb \
+    -p 5000:5000 \
+    flaskapp:latest
+
+```
+
+
+#### To run this two-tier application using  with docker-compose
+
+1. Create a `.env` file in the project directory to store your MySQL environment variables:
 
    ```bash
    touch .env
    ```
 
-4. Open the `.env` file and add your MySQL configuration:
+2. Open the `.env` file and add your MySQL configuration:
 
    ```
    MYSQL_HOST=mysql
@@ -76,46 +156,6 @@ To stop and remove the Docker containers, press `Ctrl+C` in the terminal where t
 docker-compose down
 ```
 
-## To run this two-tier application using  without docker-compose
-
-- First create a docker image from Dockerfile
-```bash
-docker build -t flaskapp .
-```
-
-- Now, make sure that you have created a network using following command
-```bash
-docker network create twotier
-```
-
-- Attach both the containers in the same network, so that they can communicate with each other
-
-i) MySQL container 
-```bash
-docker run -d \
-    --name mysql \
-    -v mysql-data:/var/lib/mysql \
-    --network=twotier \
-    -e MYSQL_DATABASE=mydb \
-    -e MYSQL_ROOT_PASSWORD=admin \
-    -p 3306:3306 \
-    mysql:5.7
-
-```
-ii) Backend container
-```bash
-docker run -d \
-    --name flaskapp \
-    --network=twotier \
-    -e MYSQL_HOST=mysql \
-    -e MYSQL_USER=root \
-    -e MYSQL_PASSWORD=admin \
-    -e MYSQL_DB=mydb \
-    -p 5000:5000 \
-    flaskapp:latest
-
-```
-
 ## Notes
 
 - Make sure to replace placeholders (e.g., `your_username`, `your_password`, `your_database`) with your actual MySQL configuration.
@@ -127,4 +167,15 @@ docker run -d \
 - If you encounter issues, check Docker logs and error messages for troubleshooting.
 
 ```
+
+
+
+
+
+***************************************
+
+ 
+
+
+
 
